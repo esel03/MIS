@@ -1,7 +1,7 @@
+from dataclasses import dataclass
 from main.models import Patient
-from main.repositories.base import BaseRepository
+from main.repositories.base import RepositoryBase
 
-
-class RepositoryPatient:
-    def get_patient_by_id(self, patient_id: int) -> Patient:
-        return Patient.objects.get(id=patient_id)
+@dataclass
+class PatientRepository(RepositoryBase):
+    model = Patient

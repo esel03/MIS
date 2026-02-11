@@ -48,10 +48,13 @@ def default_education_history():
 
 
 class BaseModel(models.Model):
+    """
+    gender: Женщина - False, Мужчина - True
+    """
     name = models.CharField(max_length=100, null=False)
     family = models.CharField(max_length=100, null=False)
     second_name = models.CharField(max_length=100, null=False)
-    gender = models.CharField(max_length=100, null=False)
+    gender = models.BooleanField(default=False, null=False) 
     email = models.EmailField(max_length=200, null=False, blank=False, unique=True)
     phone = PhoneNumberField(null=True, blank=False, unique=True)
     password = models.CharField(max_length=100, null=False)
@@ -64,7 +67,7 @@ class BaseModel(models.Model):
 class Doctor(BaseModel):
     date_birth = models.DateField(null=False)
     date_start_work = models.DateField(null=False)
-    date_end_work = models.DateField(null=True)
+    date_end_work = models.DateField(null=True, blank=True)
     salary = models.IntegerField(null=False)
     specialty = models.CharField(max_length=200)
     experience = models.IntegerField()
@@ -92,7 +95,6 @@ class Doctor(BaseModel):
 class Education(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=CASCADE)
     history_education = models.JSONField(
-        default=default_education_history,
         encoder=DjangoJSONEncoder
     )
 

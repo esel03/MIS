@@ -139,4 +139,13 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+lib64
+pyvenv
+activate.csh
+activate.ps1
+activate.fish
+pip*
+bin
+pyvenv.cfg
+
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Python

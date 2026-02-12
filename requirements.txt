@@ -5,4 +5,5 @@ django-phonenumber-field==8.4.0
 djangorestframework==3.16.1
 phonenumbers==9.0.23
 psycopg==3.3.2
+PyJWT==2.10.1
 sqlparse==0.5.5

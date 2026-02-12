@@ -2,15 +2,17 @@ from django.db import models
 from django.db.models import CASCADE
 from django.core.exceptions import ValidationError
 from phonenumber_field.modelfields import PhoneNumberField
+from main.validation_model import (
+validate_required_fields,
+validate_optional_field,
+validate_social_tag,
+)
 
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from datetime import timedelta
 
 
-def validate_social_tag(value) -> None:
-    if value and not value.startswith("@"):
-        raise ValidationError("Тег должен начинаться с символа @.")
 
 
 class BaseModel(models.Model):
@@ -100,44 +102,12 @@ class Education(models.Model):
                 "Поле 'history_education' должно быть объектом (словарём)."
             )
 
-        required_keys = ("universities", "ordinator", "advanced_training")
-        for key in required_keys:
-            if key not in data:
-                raise ValidationError(f"Отсутствует обязательное поле: '{key}'.")
-
-            value = data[key]
-            if not isinstance(value, list):
-                raise ValidationError(f"Поле '{key}' должно быть списком.")
-
-            for i, item in enumerate(value):
-                if not isinstance(item, dict):
-                    raise ValidationError(
-                        f"Элемент в списке '{key}[{i}]' должен быть объектом."
-                    )
-
-                if (
-                    "name" not in item
-                    or not isinstance(item["name"], str)
-                    or not item["name"].strip()
-                ):
-                    raise ValidationError(
-                        f"Запись в '{key}[{i}]' должна содержать непустое поле 'name'."
-                    )
-
-                if "specialty" not in item or not isinstance(item["specialty"], str):
-                    raise ValidationError(
-                        f"Запись в '{key}[{i}]' должна содержать поле 'specialty' (строка)."
-                    )
-
-                if "start_date" not in item or not isinstance(item["start_date"], str):
-                    raise ValidationError(
-                        f"Запись в '{key}[{i}]' должна содержать поле 'start_date' (строка в формате даты)."
-                    )
-
-                if "end_date" not in item or not isinstance(item["end_date"], str):
-                    raise ValidationError(
-                        f"Запись в '{key}[{i}]' должна содержать поле 'end_date' (строка в формате даты)."
-                    )
+        required_fields = ["universities", "ordinator"]
+        optional_fields = ["advanced_training"]
+        for key in required_fields:
+            validate_required_fields(key=key, data=data)
+        for key in optional_fields:
+            validate_optional_field(key=key, data=data)
 
     def save(self, *args, **kwargs):
         self.full_clean()

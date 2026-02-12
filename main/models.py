@@ -100,7 +100,7 @@ class Education(models.Model):
                 "Поле 'history_education' должно быть объектом (словарём)."
             )
 
-        required_keys = ["universities", "ordinator", "advanced_training"]
+        required_keys = ("universities", "ordinator", "advanced_training")
         for key in required_keys:
             if key not in data:
                 raise ValidationError(f"Отсутствует обязательное поле: '{key}'.")

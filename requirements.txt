@@ -1,9 +1,16 @@
 asgiref==3.11.1
+cffi==2.0.0
+cryptography==46.0.5
 Django==6.0.2
 django-filter==25.2
 django-phonenumber-field==8.4.0
+django-redis==6.0.0
 djangorestframework==3.16.1
+dotenv==0.9.9
+jwt==1.4.0
 phonenumbers==9.0.23
 psycopg==3.3.2
-PyJWT==2.10.1
+pycparser==3.0
+python-dotenv==1.2.1
+redis==7.1.1
 sqlparse==0.5.5

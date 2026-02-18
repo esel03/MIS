@@ -29,11 +29,15 @@ class RepositoryBase:
 
     def get_many(self, model, **kwargs):
         """Получение многих экземпляров модели."""
-        return model.objects.filter(pk = id)
+        return model.objects.filter(id__in=) #надо доделать извлечение значения по ключу id  словаря, пока структрура json неизвестна
 
     def get_all(self, model):
         """Получение всех экземпляров модели."""
         return model.objects.all()
+    
+    def is_exists(self, model, field, value):
+        """Проверка существования экземпляра модели."""
+        return model.objects.filter(field=value).exists()
     
 # Блок удаления из бд
     def delete_one(self, model, id):

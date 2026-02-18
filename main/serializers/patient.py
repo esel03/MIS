@@ -39,7 +39,3 @@ class PatientSerializer(serializers.ModelSerializer):
         if not value:
             raise serializers.ValidationError("Поле tag_social обязательно.")
         return value
-    
-    def create(self, validated_data):
-        patient = Patient.objects.create(**validated_data)
-        return patient

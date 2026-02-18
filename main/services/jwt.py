@@ -1,4 +1,4 @@
-from main.redis import RefreshTokenStorage
+from ..redis import RefreshTokenStorage
 import jwt
 from datetime import timedelta
 from dataclasses import dataclass
@@ -15,7 +15,7 @@ class JwtAuth:
     ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES'))
     REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv('REFRESH_TOKEN_EXPIRE_DAYS'))
 
-    token_storage = RefreshTokenStorage(TTL=timedelta(minutes=REFRESH_TOKEN_EXPIRE_DAYS))
+    token_storage = RefreshTokenStorage(TTL=int(str(timedelta(minutes=REFRESH_TOKEN_EXPIRE_DAYS)))) #???
     def create_tokens(self, user_id: str):
         access_token = self._encode_jwt(
             payload={"sub": user_id},

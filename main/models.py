@@ -13,8 +13,6 @@ from django.core.serializers.json import DjangoJSONEncoder
 from datetime import timedelta
 
 
-
-
 class BaseModel(models.Model):
     """
     gender: Женщина - False, Мужчина - True

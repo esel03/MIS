@@ -155,7 +155,6 @@ class Migration(migrations.Migration):
                 (
                     "history_education",
                     models.JSONField(
-                        default=main.models.default_education_history,
                         encoder=django.core.serializers.json.DjangoJSONEncoder,
                     ),
                 ),

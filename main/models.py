@@ -13,8 +13,6 @@ from django.core.serializers.json import DjangoJSONEncoder
 from datetime import timedelta
 
 
-
-
 class BaseModel(models.Model):
     """
     gender: Женщина - False, Мужчина - True
@@ -38,7 +36,7 @@ class BaseModel(models.Model):
         verbose_name="Почта пользователя",
     )
     phone = PhoneNumberField(
-        null=True, blank=False, unique=True, verbose_name="Номер телефона пользователя"
+        null=False, blank=False, unique=True, verbose_name="Номер телефона пользователя"
     )
     password = models.CharField(max_length=100, null=False, verbose_name="Пароль")
     is_deleted = models.BooleanField(

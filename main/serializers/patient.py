@@ -14,7 +14,7 @@ class PatientSerializer(serializers.ModelSerializer):
     def validate_password(self, value):
         if not value:
             raise serializers.ValidationError("Пароль обязателен.")
-        return make_password(value) 
+        return make_password(value)
 
     def validate_email(self, value):
         if self.instance is None:

@@ -20,4 +20,7 @@ class AuthorizationService:
         user = repository.is_exists(
             model=self.model, field="email", value=data["email"]
         )
-        return jwt_auth.create_tokens(user_id=data["id"])
+        if user:
+            tokens = jwt_auth.create_tokens(user_id=data["id"])
+            return tokens.get("access_token", None)
+        return None

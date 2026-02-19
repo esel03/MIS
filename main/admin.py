@@ -1,5 +1,36 @@
 from django.contrib import admin
-from .models import Patient, Doctor, Clinic, Consult, Education
+from .models import Patient, Doctor, Clinic, Consult, Education, University, Ordination, AdvTraining
+
+@admin.register(University)
+class UniversityAdmin(admin.ModelAdmin):
+    list_display = [
+        "education_id",
+        "name",
+        "specialty",
+        "start_date",
+        "end_date",
+    ]
+
+@admin.register(Ordination)
+class OrdinationAdmin(admin.ModelAdmin):
+    list_display = [
+        "education_id",
+        "name",
+        "specialty",
+        "start_date",
+        "end_date",
+    ]
+
+@admin.register(AdvTraining)
+class AdvTrainingAdmin(admin.ModelAdmin):
+    list_display = [
+        "education_id",
+        "name",
+        "specialty",
+        "start_date",
+        "end_date",
+    ]
+
 
 
 @admin.register(Education)

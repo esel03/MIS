@@ -8,7 +8,6 @@ import json
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
-        exclude = ["is_deleted"]
         extra_kwargs = {"password": {"write_only": True}}
 
     def validate_password(self, value):

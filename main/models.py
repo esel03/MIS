@@ -2,13 +2,11 @@ from django.db import models
 from django.db.models import CASCADE
 from django.core.exceptions import ValidationError
 from phonenumber_field.modelfields import PhoneNumberField
-from main.validation_model import (
+from .validation_model import (
     validate_required_fields,
-    validate_optional_field,
     validate_social_tag,
 )
 
-import json
 from django.core.serializers.json import DjangoJSONEncoder
 from datetime import timedelta
 
@@ -47,13 +45,23 @@ class BaseModel(models.Model):
         abstract = True
 
 
+class BaseEducation(models.Model):
+    name = models.CharField(max_length=400)
+    specialty = models.CharField(max_length=100)
+    start_date = models.DateField(null=False, blank=False, verbose_name="Дата начала обучения")
+    end_date = models.DateField(null=False, blank=False, verbose_name="Дата конца обучения")
+
+    class Meta:
+        abstract = True
+
+
 class Doctor(BaseModel):
     date_birth = models.DateField(null=False, verbose_name="Дата рождения")
     date_start_work = models.DateField(null=False, verbose_name="Дата начала работы")
     date_end_work = models.DateField(
         null=True, blank=True, verbose_name="Дата конца работы"
     )
-    salary = models.IntegerField(null=False, verbose_name="Зарплата врача")
+    salary = models.IntegerField(null=True, verbose_name="Зарплата врача")
     specialty = models.CharField(max_length=200, verbose_name="Специализация врача")
     experience = models.IntegerField(verbose_name="Опыт врача")
 
@@ -100,12 +108,9 @@ class Education(models.Model):
                 "Поле 'history_education' должно быть объектом (словарём)."
             )
 
-        required_fields = ["universities", "ordinator"]
-        optional_fields = ["advanced_training"]
+        required_fields = ["universities", "ordinator", "advanced_training"]
         for key in required_fields:
             validate_required_fields(key=key, data=data)
-        for key in optional_fields:
-            validate_optional_field(key=key, data=data)
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -113,6 +118,24 @@ class Education(models.Model):
 
     def __str__(self):
         return f"Образование: {self.doctor}"
+
+
+class University(BaseEducation):
+    education = models.ForeignKey(
+        Education, on_delete=CASCADE, verbose_name="ForeignKey на образование"
+    )
+
+
+class Ordination(BaseEducation):
+    education = models.ForeignKey(
+        Education, on_delete=CASCADE, verbose_name="ForeignKey на образование"
+    )
+
+
+class AdvTraining(BaseEducation):
+    education = models.ForeignKey(
+        Education, on_delete=CASCADE, verbose_name="ForeignKey на образование"
+    )
 
 
 class Patient(BaseModel):

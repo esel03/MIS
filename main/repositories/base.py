@@ -4,46 +4,69 @@ from dataclasses import dataclass
 @dataclass
 class RepositoryBase:
     """Базовый класс для работы с бд."""
+
 # Блок записи в бд
-    def record_one(self, model, **kwargs):
+    @staticmethod
+    def record_one(model, **kwargs):
         """Запись одного экземпляры модели."""
         return model.objects.create(**kwargs)
 
-    def record_many(self, model, data):
+    @staticmethod
+    def record_many(model, data):
         """Запись многих экземпляров модели."""
         return model.objects.bulk_create([model(**kwargs) for kwargs in data])
-        
+
+
 # Блок обновления в бд
-    def update_one(self, model, **kwargs):
+    @staticmethod
+    def update_one(model, **kwargs):
         """Обновление одного экземпляра модели."""
         return model.objects.update(**kwargs)
 
-    def update_many(self, model, data):
+    @staticmethod
+    def update_many(model, data):
         """Обновление многих экземпляров модели."""
         return model.objects.bulk_update([model(**kwargs) for kwargs in data])
-    
+
+
 # Блок чтения из бд
-    def get_one(self, model, id):
+    @staticmethod
+    def get_one(model, pk):
         """Получение одного экземпляра модели."""
-        return model.objects.get(pk = id)
+        return model.objects.get(pk = pk)
 
-    def get_many(self, model, **kwargs):
+    @staticmethod
+    def get_many(model, **kwargs):
         """Получение многих экземпляров модели."""
-        return model.objects.filter(pk = id)
+        return model.objects.filter(**kwargs)
 
-    def get_all(self, model):
+    @staticmethod
+    def get_all(model):
         """Получение всех экземпляров модели."""
         return model.objects.all()
-    
+
+
+# Блок check из бд
+    # TODO: обобщить функции для email, id, phone
+    @staticmethod
+    def is_exists(model, field, value) -> bool:
+        return model.objects.filter(field=value).exists()
+
+
 # Блок удаления из бд
-    def delete_one(self, model, id):
+    @staticmethod
+    def delete_one(model, pk):
         """Удаление одного экземпляра модели."""
-        return model.objects.filter(pk = id).delete()
-    
-    def delete_many(self, model, id):
+        return model.objects.filter(pk = pk).update(is_delete = True)
+
+    @staticmethod
+    def delete_many(model, pk):
         """Удаление многих экземпляров модели."""
-        return model.objects.filter(pk = id).delete().delete()
-    
-    def delete_all(self, model):
+        # TODO: Реализовать выбор ряда юзеров для удаления
+        return model.objects.filter(pk = pk).bulk_update(is_delete = True)
+
+    @staticmethod
+    def delete_all(model):
         """Удаление всех экземпляров модели."""
-        return model.objects.all().delete()
+        # TODO: Реализовать удаление всех сразу без перечисления, нужно ли?
+        return model.objects.all().bulk_update(is_delete = True)

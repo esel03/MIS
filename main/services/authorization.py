@@ -17,5 +17,7 @@ class AuthorizationService:
 
     def login_user(self, user_model, data):
         """Авторизация пользователя."""
-        user = repository.is_exists(model=self.model, field="email", value=data["email"])
+        user = repository.is_exists(
+            model=self.model, field="email", value=data["email"]
+        )
         return jwt_auth.create_tokens(user_id=data["id"])

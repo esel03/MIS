@@ -1,8 +1,9 @@
 from django.core.cache import caches
 from dataclasses import dataclass
 
-cache_db = caches['default']
-token_db = caches['tokens']
+cache_db = caches["default"]
+token_db = caches["tokens"]
+
 
 @dataclass
 class RefreshTokenStorage:

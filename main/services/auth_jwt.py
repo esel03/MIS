@@ -15,7 +15,10 @@ class JwtAuth:
     ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
     REFRESH_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
 
-    token_storage = RefreshTokenStorage(TTL=int(str(timedelta(minutes=REFRESH_TOKEN_EXPIRE_DAYS)))) #???
+    token_storage = RefreshTokenStorage(
+        TTL=int(timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS).total_seconds())
+    )  # ???
+
     def create_tokens(self, user_id: str):
         access_token = self._encode_jwt(
             payload={"sub": user_id},
@@ -48,6 +51,9 @@ class JwtAuth:
         except jwt.InvalidTokenError:
             raise Exception("Invalid token")
         return data.get("sub")
+    
+    def update_access_token(self, token: str):
+        pass
 
     def verify_refresh_token(self, token: str) -> str:
         """Проверяет существование refresh-токен в Redis"""

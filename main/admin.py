@@ -51,7 +51,11 @@ class PatientAdmin(admin.ModelAdmin):
         "phone",
         "email",
     ]
-    ordering = ("family", "name", "second_name", )
+    ordering = (
+        "family",
+        "name",
+        "second_name",
+    )
 
 
 @admin.register(Doctor)
@@ -64,7 +68,11 @@ class DoctorAdmin(admin.ModelAdmin):
         "phone",
         "email",
     ]
-    ordering = ("family", "name", "second_name", )
+    ordering = (
+        "family",
+        "name",
+        "second_name",
+    )
 
 
 @admin.register(Clinic)
@@ -73,10 +81,12 @@ class ClinicAdmin(admin.ModelAdmin):
         "name",
         "juridical_address",
     ]
-    ordering = ("name", "juridical_address", )
-        
+    ordering = (
+        "name",
+        "juridical_address",
+    )
+
 
 @admin.register(Consult)
 class ConsultAdmin(admin.ModelAdmin):
     pass
-

@@ -9,3 +9,4 @@ class PatientSerializer(BaseSerializer):
         model = Patient
         exclude = ["is_deleted"]
         extra_kwargs = {'password': {'write_only': True}}
+

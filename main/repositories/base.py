@@ -38,7 +38,7 @@ class RepositoryBase:
     @staticmethod
     def get_many(model, **kwargs):
         """Получение многих экземпляров модели."""
-        return model.objects.filter(**kwargs)
+        return model.objects.filter(id__in=) #надо доделать извлечение значения по ключу id  словаря, пока структрура json неизвестна
 
     @staticmethod
     def get_all(model):

@@ -3,9 +3,9 @@ from django.db.models import CASCADE
 from django.core.exceptions import ValidationError
 from phonenumber_field.modelfields import PhoneNumberField
 from main.validation_model import (
-validate_required_fields,
-validate_optional_field,
-validate_social_tag,
+    validate_required_fields,
+    validate_optional_field,
+    validate_social_tag,
 )
 
 import json

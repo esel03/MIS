@@ -3,16 +3,14 @@ from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from ..models import Doctor, Education
 
+
 class EducationInputSerializer(serializers.Serializer):
     """
     Валидация поля history_education (вложенный JSON)
     """
-    universities = serializers.ListField(
-        child=serializers.DictField(), required=True
-    )
-    ordinator = serializers.ListField(
-        child=serializers.DictField(), required=True
-    )
+
+    universities = serializers.ListField(child=serializers.DictField(), required=True)
+    ordinator = serializers.ListField(child=serializers.DictField(), required=True)
     advanced_training = serializers.ListField(
         child=serializers.DictField(), required=False, allow_null=True, default=list
     )
@@ -25,7 +23,9 @@ class EducationInputSerializer(serializers.Serializer):
 
     def _validate_list(self, items, field_name):
         if not isinstance(items, list):
-            raise serializers.ValidationError(f"Поле '{field_name}' должно быть списком.")
+            raise serializers.ValidationError(
+                f"Поле '{field_name}' должно быть списком."
+            )
         for i, item in enumerate(items):
             self._validate_item(item, field_name, i)
         return items
@@ -49,9 +49,7 @@ class EducationInputSerializer(serializers.Serializer):
             errors["end_date"] = "Обязательная строка в формате даты."
 
         if errors:
-            raise serializers.ValidationError({
-                f"{parent}[{index}]": errors
-            })
+            raise serializers.ValidationError({f"{parent}[{index}]": errors})
         return item
 
 
@@ -61,38 +59,48 @@ class DoctorCreateUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Doctor
-        exclude = ['is_deleted']
+        exclude = ["is_deleted"]
 
     def validate_email(self, value):
-        if Doctor.objects.filter(email=value).exclude(pk=self.instance.pk if self.instance else None).exists():
+        if (
+            Doctor.objects.filter(email=value)
+            .exclude(pk=self.instance.pk if self.instance else None)
+            .exists()
+        ):
             raise serializers.ValidationError("Врач с таким email уже существует.")
         return value
 
     def validate_phone(self, value):
-        if Doctor.objects.filter(phone=value).exclude(pk=self.instance.pk if self.instance else None).exists():
+        if (
+            Doctor.objects.filter(phone=value)
+            .exclude(pk=self.instance.pk if self.instance else None)
+            .exists()
+        ):
             raise serializers.ValidationError("Врач с таким телефоном уже существует.")
         return value
 
     def validate(self, attrs):
-        date_birth = attrs.get('date_birth')
-        date_start_work = attrs.get('date_start_work')
-        date_end_work = attrs.get('date_end_work')
+        date_birth = attrs.get("date_birth")
+        date_start_work = attrs.get("date_start_work")
+        date_end_work = attrs.get("date_end_work")
 
         if date_birth and date_start_work and date_birth > date_start_work:
-            raise serializers.ValidationError({
-                'date_birth': 'Дата рождения не может быть позже даты начала работы.'
-            })
+            raise serializers.ValidationError(
+                {"date_birth": "Дата рождения не может быть позже даты начала работы."}
+            )
 
         if date_end_work and date_start_work and date_start_work > date_end_work:
-            raise serializers.ValidationError({
-                'date_end_work': 'Дата окончания работы не может быть раньше даты начала.'
-            })
+            raise serializers.ValidationError(
+                {
+                    "date_end_work": "Дата окончания работы не может быть раньше даты начала."
+                }
+            )
 
         return data
 
     def create(self, validated_data):
-        education_data = validated_data.pop('education', None)
-        validated_data['password'] = make_password(validated_data['password'])
+        education_data = validated_data.pop("education", None)
+        validated_data["password"] = make_password(validated_data["password"])
         doctor = Doctor.objects.create(**validated_data)
 
         if education_data:
@@ -101,9 +109,9 @@ class DoctorCreateUpdateSerializer(serializers.ModelSerializer):
         return doctor
 
     def update(self, instance, validated_data):
-        education_data = validated_data.pop('education', None)
-        if 'password' in validated_data:
-            validated_data['password'] = make_password(validated_data['password'])
+        education_data = validated_data.pop("education", None)
+        if "password" in validated_data:
+            validated_data["password"] = make_password(validated_data["password"])
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
@@ -111,12 +119,14 @@ class DoctorCreateUpdateSerializer(serializers.ModelSerializer):
 
         # Обработка образования
         if education_data is not None:  # Явное обновление (null = удалить)
-            if hasattr(instance, 'education'):
+            if hasattr(instance, "education"):
                 instance.education.history_education = education_data
                 instance.education.save()
             else:
-                Education.objects.create(doctor=instance, history_education=education_data)
-        elif education_data is None and hasattr(instance, 'education'):
+                Education.objects.create(
+                    doctor=instance, history_education=education_data
+                )
+        elif education_data is None and hasattr(instance, "education"):
             instance.education.delete()
 
         return instance

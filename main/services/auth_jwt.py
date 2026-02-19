@@ -51,6 +51,9 @@ class JwtAuth:
         except jwt.InvalidTokenError:
             raise Exception("Invalid token")
         return data.get("sub")
+    
+    def update_access_token(self, token: str):
+        pass
 
     def verify_refresh_token(self, token: str) -> str:
         """Проверяет существование refresh-токен в Redis"""

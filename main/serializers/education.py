@@ -58,16 +58,16 @@ class EducationSerializer(serializers.ModelSerializer):
 
             start_date = item.get("start_date")
             if not start_date or not isinstance(start_date, str) or not start_date.strip():
-                start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
                 errors["start_date"] = "Обязательная строка в формате даты."
+            start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
 
             end_date = item.get("end_date")
-            if not end_date or not isinstance(end_date, str) or not start_date.strip():
-                end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+            if not end_date or not isinstance(end_date, str) or not end_date.strip():
                 errors["end_date"] = "Обязательная строка в формате даты."
+            end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
 
-            if start_date >= end_date:
-                errors["date"] = "Начало обучения не может быть позже конца обучения."
+            if start_date >= end_date or not start_date and not end_date:
+                errors["dif_date"] = "Начало обучения не может быть позже конца обучения."
 
 
             if errors:

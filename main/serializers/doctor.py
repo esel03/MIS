@@ -1,12 +1,14 @@
 from dataclasses import dataclass
+from rest_framework import serializers
 from ..models import Doctor
 from ..serializers.base import BaseSerializer
 
-@dataclass
-class DoctorSerializer(BaseSerializer):
-    model = Doctor
+
+class DoctorCreateUpdateSerializer(BaseSerializer):
     class Meta:
         model = Doctor
-        extra_kwargs = {'password': {'write_only': True}}
-
+        exclude = ['is_deleted']
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
 

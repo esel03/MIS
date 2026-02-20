@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-
+from typing import Type
+from django.db import models
 
 @dataclass
 class RepositoryBase:
@@ -50,8 +51,8 @@ class RepositoryBase:
 # Блок check из бд
     # TODO: обобщить функции для email, id, phone
     @staticmethod
-    def is_exists(model, field, value) -> bool:
-        return model.objects.filter(field=value).exists()
+    def is_exists(model: Type[models.Model], field: str, value) -> bool:
+        return model.objects.filter(**{field: value}).exists()
 
 
 # Блок удаления из бд

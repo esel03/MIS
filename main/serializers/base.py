@@ -1,4 +1,7 @@
+from django.db import models
+from typing import Type
 from rest_framework import serializers
+from dataclasses import dataclass
 from django.contrib.auth.hashers import make_password
 from ..repositories.base import RepositoryBase
 
@@ -6,26 +9,32 @@ repo = RepositoryBase()
 
 
 class BaseSerializer(serializers.ModelSerializer):
-    @staticmethod
-    def validate_password(value):
+
+    def validate_password(self, value):
         if not value:
             raise serializers.ValidationError("Пароль обязателен.")
         return make_password(value)
 
-    @staticmethod
-    def validate_email(model, field, value):
+
+    def validate_email(self, value):
         if value:
-            if not repo.is_exists(model=model, field=field, value=value):
+            if not hasattr(self.Meta, 'model'):
+                raise AssertionError("Сериализатор должен иметь Meta.model")
+            model = self.Meta.model
+            if repo.is_exists(model=model, field='email', value=value):
                 raise serializers.ValidationError("Пользователь с таким email уже существует.")
             return value
         else:
             raise serializers.ValidationError("Поле не может быть пустым.")
 
-    @staticmethod
-    def validate_phone(model,field, value):
+
+    def validate_phone(self, value):
         if value:
-            if not repo.is_exists(model=model, field=field, value=value):
-                raise serializers.ValidationError("Пациент с таким телефоном уже существует.")
+            if not hasattr(self.Meta, 'model'):
+                raise AssertionError("Сериализатор должен иметь Meta.model")
+            model = self.Meta.model
+            if repo.is_exists(model=model, field='phone', value=value):
+                raise serializers.ValidationError("Пользователь с таким телефоном уже существует.")
             return value
         else:
             raise serializers.ValidationError("Поле не может быть пустым.")

@@ -20,9 +20,9 @@ class RepositoryBase:
 
 # Блок обновления в бд
     @staticmethod
-    def update_one(model, **kwargs):
+    def update_one(model, pk:str, **kwargs):
         """Обновление одного экземпляра модели."""
-        return model.objects.update(**kwargs)
+        return model.objects.filter(pk=pk).update(**kwargs)
 
     @staticmethod
     def update_many(model, data):
